@@ -67,15 +67,16 @@ export default function PasswordModal({
               </svg>
             </div>
             <input
-              type="password"
+              type="text"
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
                 if (passwordError) setPasswordError('');
               }}
               placeholder="Enter password"
-              className="w-full pl-10 pr-4 py-3 rounded-lg bg-surface/80 border-2 border-surface-hover focus:border-primary focus:outline-none focus:ring-0 transition-colors duration-300 ease-in-out text-text-primary placeholder-text-secondary/50"
+              className="w-full pl-10 pr-4 py-3 rounded-lg bg-surface/80 border-2 border-surface-hover focus:border-primary focus:outline-none focus:ring-0 transition-colors duration-300 ease-in-out text-text-primary placeholder-text-secondary/50 font-mono"
               autoFocus
+              autoComplete="off"
             />
           </div>
           {passwordError && (
