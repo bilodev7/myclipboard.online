@@ -84,7 +84,7 @@ export default function Home() {
                 </svg>
               </div>
               <h3 className="text-lg font-medium text-text-primary mb-1">No Login Required</h3>
-              <p className="text-text-secondary text-sm">Just create or join a clipboard with a 6-digit code</p>
+              <p className="text-text-secondary text-sm">Just create or join a clipboard with a 4-digit code</p>
             </div>
 
             <div className="p-4 rounded-lg border border-surface-hover bg-surface/50 backdrop-blur-sm">

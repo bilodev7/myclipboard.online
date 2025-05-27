@@ -64,7 +64,7 @@ export default function CreateClipboardCard() {
         <div className="absolute -bottom-16 -right-16 w-40 h-40 bg-primary/5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
         <div className="relative z-10 flex flex-col h-full gap-10 md:gap-0">
-          <div className="flex items-center">
+          <div className="flex items-center mb-auto">
             <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />

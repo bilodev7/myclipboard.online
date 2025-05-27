@@ -11,8 +11,9 @@ import LoadingState from './components/LoadingState';
 import PasswordVerificationModal from './components/PasswordVerificationModal';
 import { ClipboardEntryType } from './components/ClipboardEntry';
 
-// Import custom hook
+// Import custom hooks
 import { useSocketManager } from '@/lib/hooks/useSocketManager';
+import { useSavedClipboards } from '@/lib/hooks/useSavedClipboards';
 
 export default function ClipboardRoom() {
   const params = useParams();
@@ -24,6 +25,9 @@ export default function ClipboardRoom() {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [isCheckingPassword, setIsCheckingPassword] = useState(true);
   const [isPasswordVerified, setIsPasswordVerified] = useState(false);
+  
+  // Use saved clipboards hook to track clipboard history
+  const { addClipboard } = useSavedClipboards();
 
   // Use our custom socket manager hook
   const {
@@ -101,6 +105,9 @@ export default function ClipboardRoom() {
       } else {
         // No password, proceed directly
         setIsPasswordVerified(true);
+        
+        // Save to clipboard history since we've successfully accessed it
+        addClipboard(roomCode);
       }
     } catch (err) {
       console.error('Error checking clipboard:', err);
@@ -124,6 +131,10 @@ export default function ClipboardRoom() {
       if (response.ok) {
         setIsPasswordVerified(true);
         setShowPasswordModal(false);
+        
+        // Save to clipboard history after successful password verification
+        addClipboard(roomCode);
+        
         return true;
       }
 
