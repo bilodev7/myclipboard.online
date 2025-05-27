@@ -41,17 +41,29 @@ export default function CreateClipboardCard() {
   };
 
   return (
-    <div className="card-bg flex-1 p-6 md:p-8 rounded-xl shadow-xl hover-lift transition-all duration-300 ease-out relative overflow-hidden">
-      <div className="absolute -top-10 -left-10 w-32 h-32 bg-primary/10 rounded-full animate-pulse-slow"></div>
-      <div className="relative z-10">
-        <h2 className="text-2xl font-semibold text-text-primary mb-4">New Clipboard</h2>
-        <p className="text-text-secondary mb-6">
+    <div className="flex-1 p-6 md:p-8 rounded-xl border border-surface-hover bg-surface/50 backdrop-blur-sm shadow-lg hover:shadow-glow-sm transition-all duration-300 ease-out relative overflow-hidden group">
+      {/* Background elements */}
+      <div className="absolute -top-10 -left-10 w-32 h-32 bg-primary/10 rounded-full animate-pulse-slow group-hover:scale-110 transition-transform duration-500"></div>
+      <div className="absolute -bottom-16 -right-16 w-40 h-40 bg-primary/5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+      
+      <div className="relative z-10 flex flex-col h-full">
+        <div className="flex items-center mb-4">
+          <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-semibold text-text-primary">New Clipboard</h2>
+        </div>
+        
+        <p className="text-text-secondary my-auto pl-1">
           Start a new shared clipboard. A unique 6-character code will be generated for you.
         </p>
+        
         <button
           onClick={handleCreateClipboard}
           disabled={isLoading}
-          className="w-full btn-primary transition-all duration-200 ease-in-out transform hover:scale-105 focus:ring-4 focus:ring-primary/30 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full mt-auto py-3 px-4 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg flex items-center justify-center transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/30 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? (
             <span className="flex items-center justify-center">
@@ -62,13 +74,22 @@ export default function CreateClipboardCard() {
               Creating...
             </span>
           ) : (
-            'Create New Clipboard'
+            <>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              Create New Clipboard
+            </>
           )}
         </button>
       </div>
+      
       {error && (
-        <div className="mt-4 p-3 bg-error/10 border border-error/30 text-error rounded-md text-sm">
-          {error}
+        <div className="mt-4 p-3 bg-error/10 border border-error/30 text-error rounded-md text-sm flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>{error}</span>
         </div>
       )}
     </div>

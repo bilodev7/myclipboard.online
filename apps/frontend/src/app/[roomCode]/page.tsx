@@ -79,12 +79,11 @@ export default function ClipboardRoom() {
         connectedUsers={connectedUsers}
         expiresIn={expiresIn}
         onCopyLink={handleCopyLink}
-        onClearClipboard={handleClearClipboard}
       />
 
       {/* Scrollable content area - Only this part should scroll */}
       <div className="flex-1 overflow-y-auto">
-        <main className="container mx-auto px-4 py-6 max-w-4xl">
+        <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-4xl">
           {/* Add Entry Form */}
           <ClipboardEntryForm onAddEntry={handleAddEntry} />
 
@@ -94,6 +93,7 @@ export default function ClipboardRoom() {
             copiedId={copied}
             onCopyEntry={handleCopyEntry}
             onDeleteEntry={handleDeleteEntry}
+            onClearAll={handleClearClipboard}
           />
         </main>
       </div>

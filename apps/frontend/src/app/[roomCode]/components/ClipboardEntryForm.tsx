@@ -44,15 +44,15 @@ export default function ClipboardEntryForm({ onAddEntry }: ClipboardEntryFormPro
   };
 
   return (
-    <div className="mb-8 relative">
-      <div className="flex items-center mb-3">
+    <div className="mb-6 sm:mb-8 relative">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
         <h2 className="text-lg font-semibold text-text-primary flex items-center">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
           </svg>
           New Entry
         </h2>
-        <div className="ml-auto text-xs px-2 py-1 bg-primary/10 text-primary rounded-full flex items-center">
+        <div className="text-xs px-2 py-1 bg-primary/10 text-primary rounded-full flex items-center">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>

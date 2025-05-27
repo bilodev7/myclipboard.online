@@ -1,35 +1,64 @@
 'use client';
 
+import { useState } from 'react';
 import ClipboardEntry, { ClipboardEntryType } from './ClipboardEntry';
 
 interface ClipboardEntryListProps {
   entries: ClipboardEntryType[];
-  copiedId: string | null;
   onCopyEntry: (content: string, id: string) => void;
   onDeleteEntry: (id: string) => void;
+  onClearAll: () => void;
+  copiedId: string | null;
 }
 
 export default function ClipboardEntryList({ 
   entries, 
   copiedId, 
   onCopyEntry, 
-  onDeleteEntry 
+  onDeleteEntry, 
+  onClearAll 
 }: ClipboardEntryListProps) {
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+
+  const handleClearRequest = () => {
+    if (showClearConfirm) {
+      onClearAll();
+      setShowClearConfirm(false);
+    } else {
+      setShowClearConfirm(true);
+      setTimeout(() => setShowClearConfirm(false), 3000);
+    }
+  };
+
   return (
-    <div className="mt-8">
-      <div className="flex items-center justify-between mb-4 sticky top-0 bg-background/80 backdrop-blur-sm py-2 z-10">
-        <h2 className="text-lg font-semibold text-text-primary flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <div className="mt-6 sm:mt-8">
+      <div className="flex items-center justify-between mb-4 sticky top-0 bg-background/90 backdrop-blur-sm py-2 z-10">
+        <h2 className="text-base sm:text-lg font-semibold text-text-primary flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
           </svg>
           Clipboard Entries
         </h2>
-        <span className="text-text-secondary text-sm px-2 py-1 bg-surface-hover rounded-full">
-          {entries.length} {entries.length === 1 ? 'item' : 'items'}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-text-secondary text-xs sm:text-sm px-2 py-1 bg-surface-hover rounded-full">
+            {entries.length} {entries.length === 1 ? 'item' : 'items'}
+          </span>
+          {entries.length > 0 && (
+            <button
+              onClick={handleClearRequest}
+              className={`flex items-center px-1.5 py-1 rounded-lg transition-all duration-200 text-xs ${showClearConfirm ? 'bg-red-500/90 text-white' : 'bg-surface hover:bg-surface-hover text-text-secondary hover:text-red-500'} border border-surface-hover`}
+              title="Clear all clipboard entries"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              {showClearConfirm ? 'Confirm' : 'Clear'}
+            </button>
+          )}
+        </div>
       </div>
       
-      <div className="space-y-4">
+      <div className="space-y-4 px-1">
         {entries.length === 0 ? (
           <div className="clipboard-entry border-dashed flex flex-col items-center justify-center py-12 mt-4">
             <div className="w-16 h-16 bg-surface-hover rounded-full flex items-center justify-center mb-4">
