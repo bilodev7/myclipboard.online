@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import CreateClipboardCard from '@/components/CreateClipboardCard';
 import JoinClipboardCard from '@/components/JoinClipboardCard';
+import FeaturesSection from '@/components/FeaturesSection';
 
 export default function Home() {
   return (
@@ -65,54 +66,8 @@ export default function Home() {
             <CreateClipboardCard />
           </div>
 
-          {/* Features Section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-            <div className="p-4 rounded-lg border border-surface-hover bg-surface/50 backdrop-blur-sm">
-              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mb-3">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-medium text-text-primary mb-1">Real-time Sync</h3>
-              <p className="text-text-secondary text-sm">Changes appear instantly across all connected devices</p>
-            </div>
-
-            <div className="p-4 rounded-lg border border-surface-hover bg-surface/50 backdrop-blur-sm">
-              <div className="w-10 h-10 bg-secondary/10 rounded-full flex items-center justify-center mb-3">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-medium text-text-primary mb-1">No Login Required</h3>
-              <p className="text-text-secondary text-sm">Just create or join a clipboard with a 4-digit code</p>
-            </div>
-
-            <div className="p-4 rounded-lg border border-surface-hover bg-surface/50 backdrop-blur-sm">
-              <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center mb-3">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-medium text-text-primary mb-1">24-Hour Storage</h3>
-              <p className="text-text-secondary text-sm">Clipboards automatically expire after 24 hours of inactivity</p>
-            </div>
-
-            <div className="p-4 rounded-lg border border-surface-hover bg-surface/50 backdrop-blur-sm relative overflow-hidden group">
-              <div className="absolute -right-6 -top-6 w-12 h-12 bg-emerald-500/10 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
-              <div className="w-10 h-10 bg-emerald-500/10 rounded-full flex items-center justify-center mb-3 relative z-10">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-medium text-text-primary mb-1 relative z-10">End-to-End Encrypted</h3>
-              <p className="text-text-secondary text-sm relative z-10">Your clipboard data is fully encrypted and secure</p>
-              <div className="absolute bottom-1 right-1">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-emerald-500/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-              </div>
-            </div>
-          </div>
+          {/* Features */}
+          <FeaturesSection />
 
         </div>
       </div>
