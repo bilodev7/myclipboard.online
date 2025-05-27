@@ -18,7 +18,16 @@ export class ClipboardController {
   @Get(':roomCode/exists')
   async clipboardExists(@Param('roomCode') roomCode: string) {
     const exists = await this.clipboardService.clipboardExists(roomCode);
-    return { exists };
+    
+    if (!exists) {
+      return { exists: false, hasPassword: false };
+    }
+    
+    // Get the clipboard to check if it has a password
+    const clipboard = await this.clipboardService.getClipboard(roomCode);
+    const hasPassword = clipboard?.password ? true : false;
+    
+    return { exists, hasPassword };
   }
 
   @Post(':roomCode/verify')

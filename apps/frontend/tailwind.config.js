@@ -40,6 +40,9 @@ module.exports = {
       },
       animation: {
         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'fadeIn': 'fadeIn 0.3s ease-in-out',
+        'scaleIn': 'scaleIn 0.3s ease-out',
+        'slideUpIn': 'slideUpIn 0.3s ease-out',
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
