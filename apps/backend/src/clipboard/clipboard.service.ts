@@ -29,8 +29,8 @@ export class ClipboardService {
    * Generate a new room code for a clipboard
    */
   generateRoomCode(): string {
-    // Generate a 6-character alphanumeric code
-    return Math.random().toString(36).substring(2, 8).toUpperCase();
+    // Generate a 4-character alphanumeric code
+    return Math.random().toString(36).substring(2, 6).toUpperCase();
   }
 
   /**

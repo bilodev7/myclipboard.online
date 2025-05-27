@@ -10,7 +10,7 @@ export default function JoinClipboardCard() {
 
   // Validate room code format (6 alphanumeric characters, uppercase)
   const isValidRoomCode = (code: string): boolean => {
-    const roomCodeRegex = /^[A-Z0-9]{6}$/;
+    const roomCodeRegex = /^[A-Z0-9]{4}$/;
     return roomCodeRegex.test(code);
   };
 
@@ -24,7 +24,7 @@ export default function JoinClipboardCard() {
 
     // Validate room code format
     if (!isValidRoomCode(roomCode)) {
-      setError('Invalid room code format. Code should be 6 characters (letters and numbers)');
+      setError('Invalid room code format. Code should be 4 characters (letters and numbers)');
       return;
     }
 
@@ -49,7 +49,7 @@ export default function JoinClipboardCard() {
         </div>
         
         <p className="text-text-secondary mb-6 pl-1">
-          Enter a 6-character code to join an existing clipboard.
+          Enter a 4-character code to join an existing clipboard.
         </p>
         
         <form onSubmit={handleJoinClipboard} className="space-y-4">
@@ -67,9 +67,9 @@ export default function JoinClipboardCard() {
                   setRoomCode(e.target.value.toUpperCase());
                   if (error) setError('');
                 }}
-                placeholder="Enter 6-character code"
+                placeholder="Enter 4-character code"
                 className="w-full pl-10 pr-4 py-3 rounded-lg bg-surface/80 border-2 border-surface-hover focus:border-secondary focus:outline-none focus:ring-0 transition-colors duration-300 ease-in-out text-text-primary placeholder-text-secondary/50 font-mono tracking-wider shadow-inner"
-                maxLength={6}
+                maxLength={4}
                 autoComplete="off"
                 aria-label="Room code"
               />

@@ -74,7 +74,7 @@ export default function CreateClipboardCard() {
           </div>
 
           <p className="text-text-secondary my-auto pl-1">
-            Start a new shared clipboard. A unique 6-character code will be generated for you.
+            Start a new shared clipboard. A unique 4-character code will be generated for you.
           </p>
 
           <div className="flex mt-auto w-full">

@@ -60,14 +60,14 @@ export function useSocketManager({ roomCode, clientId }: UseSocketManagerOptions
 
   // Validate room code format (6 alphanumeric characters, uppercase)
   const isValidRoomCode = (code: string): boolean => {
-    const roomCodeRegex = /^[A-Z0-9]{6}$/;
+    const roomCodeRegex = /^[A-Z0-9]{4}$/;
     return roomCodeRegex.test(code);
   };
 
   useEffect(() => {
     // Validate room code format before connecting
     if (!isValidRoomCode(roomCode)) {
-      setError(`Invalid clipboard code format: ${roomCode}. Please use a 6-character uppercase alphanumeric code.`);
+      setError(`Invalid clipboard code format: ${roomCode}. Please use a 4-character uppercase alphanumeric code.`);
       setIsLoading(false);
       return;
     }
