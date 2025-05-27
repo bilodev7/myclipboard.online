@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-rgb: 18, 18, 18;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+}
+
+@layer base {
+  ::selection {
+    @apply bg-primary/30 text-white;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-md font-medium transition-all duration-200 shadow-sm;
+  }
+  
+  .btn-primary {
+    @apply bg-primary text-white hover:bg-primary/90 hover:shadow-glow-sm focus:ring-2 focus:ring-primary/50 focus:outline-none;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary text-white hover:bg-secondary/90 hover:shadow-sm focus:ring-2 focus:ring-secondary/50 focus:outline-none;
+  }
+  
+  .btn-accent {
+    @apply bg-accent text-white hover:bg-accent/90 hover:shadow-sm focus:ring-2 focus:ring-accent/50 focus:outline-none;
+  }
+  
+  .btn-ghost {
+    @apply bg-transparent text-text-primary border border-surface-hover hover:bg-surface-hover focus:ring-2 focus:ring-primary/20 focus:outline-none;
+  }
+  
+  .input {
+    @apply px-4 py-2 bg-surface-hover border border-surface-active rounded-md text-text-primary
+    focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent
+    placeholder:text-text-secondary/50;
+  }
+  
+  .card {
+    @apply bg-surface p-6 rounded-lg border border-surface-hover shadow-md backdrop-blur-sm;
+  }
+  
+  .card-hover {
+    @apply transition-all duration-200 hover:shadow-glow-sm hover:border-primary/30;
+  }
+  
+  .clipboard-entry {
+    @apply bg-surface-hover p-4 rounded-md border border-surface-active transition-all duration-200;
+  }
+  
+  .clipboard-entry-content {
+    @apply bg-background-alt p-3 rounded whitespace-pre-wrap break-words text-text-primary;
+  }
+  
+  .icon-btn {
+    @apply p-2 rounded-full transition-all duration-200 hover:bg-surface-active focus:outline-none focus:ring-2 focus:ring-primary/30;
+  }
+}

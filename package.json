@@ -1,0 +1,17 @@
+{
+  "name": "shared-clipboard",
+  "version": "1.0.0",
+  "description": "A real-time shared clipboard application",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "dev": "pnpm --filter=* run dev",
+    "build": "pnpm --filter=* run build",
+    "start": "pnpm --filter=* run start",
+    "test": "pnpm --filter=* run test"
+  },
+  "keywords": ["clipboard", "sharing", "real-time"],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.11.0"
+}
