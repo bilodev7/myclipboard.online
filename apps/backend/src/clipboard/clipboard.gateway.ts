@@ -39,36 +39,27 @@ export class ClipboardGateway implements OnGatewayInit, OnGatewayConnection, OnG
   }
 
   async handleConnection(client: Socket) {
-    const { roomCode, isCreating } = client.handshake.query;
+    const { roomCode } = client.handshake.query;
     
     if (!roomCode || typeof roomCode !== 'string') {
-      this.logger.error('No room code provided');
+      this.logger.warn(`Client ${client.id} connected without a valid room code.`);
+      client.emit('error', { message: 'Room code is required.' });
       client.disconnect();
       return;
     }
 
     // Check if clipboard exists
-    let exists = await this.clipboardService.clipboardExists(roomCode);
+    const exists = await this.clipboardService.clipboardExists(roomCode);
     
-    // If the client is creating a new clipboard and it doesn't exist, create it
-    if (!exists && isCreating === 'true') {
-      try {
-        // Create a new clipboard with the provided room code
-        await this.clipboardService.createClipboardWithCode(roomCode);
-        exists = true;
-        this.logger.log(`Created new clipboard with code: ${roomCode}`);
-      } catch (error) {
-        this.logger.error(`Failed to create clipboard ${roomCode}`, error);
-        client.disconnect();
-        return;
-      }
-    } else if (!exists) {
-      this.logger.error(`Clipboard ${roomCode} does not exist`);
+    if (!exists) {
+      this.logger.warn(`Client ${client.id} attempted to connect to non-existent room: ${roomCode}.`);
+      client.emit('error', { message: `Clipboard room ${roomCode} does not exist.` });
       client.disconnect();
       return;
     }
 
     this.logger.log(`Client connected: ${client.id} to room ${roomCode}`);
+    // Client will join the room upon receiving 'joinRoom' message from frontend
   }
 
   async handleDisconnect(client: Socket) {
@@ -96,38 +87,49 @@ export class ClipboardGateway implements OnGatewayInit, OnGatewayConnection, OnG
     @MessageBody() data: { roomCode: string; clientId: string },
   ) {
     const { roomCode, clientId } = data;
+    this.logger.log(`Attempting to join room: ${roomCode}, ClientID: ${clientId}, SocketID: ${client.id}`);
+
+    // Ensure client is connecting to the room specified in handshake
+    const handshakeRoomCode = client.handshake.query.roomCode;
+    if (handshakeRoomCode !== roomCode) {
+      this.logger.warn(`Client ${client.id} (clientId: ${clientId}) room mismatch. Handshake: ${handshakeRoomCode}, JoinRequest: ${roomCode}.`);
+      client.emit('error', { message: 'Room code mismatch. Please refresh.' });
+      client.disconnect(); // Disconnecting on critical mismatch
+      return;
+    }
     
-    // Join the room
+    this.logger.log(`Fetching clipboard for room ${roomCode}, ClientID: ${clientId}`);
+    const clipboard = await this.clipboardService.getClipboard(roomCode);
+    
+    if (!clipboard) {
+      this.logger.warn(`Clipboard ${roomCode} not found for ClientID: ${clientId} during joinRoom.`);
+      client.emit('error', { message: `Clipboard ${roomCode} not found or has expired.` });
+      // Not disconnecting, client might go home or retry based on this error.
+      return;
+    }
+    
+    this.logger.log(`Successfully fetched clipboard for room ${roomCode}, ClientID: ${clientId}. Joining socket to room.`);
     client.join(roomCode);
     
-    // Update user count
     if (!this.roomUserCount[roomCode]) {
       this.roomUserCount[roomCode] = 0;
     }
     this.roomUserCount[roomCode]++;
+    this.logger.log(`User count for room ${roomCode} is now ${this.roomUserCount[roomCode]}.`);
     
-    // Get clipboard data
-    const clipboard = await this.clipboardService.getClipboard(roomCode);
-    
-    if (!clipboard) {
-      client.emit('error', { message: 'Clipboard not found' });
-      return;
-    }
-    
-    // Get expiration time
     const expiresIn = await this.clipboardService.getExpirationTime(roomCode);
+    this.logger.log(`Expiration for room ${roomCode} is ${expiresIn}. Emitting clipboardData to ClientID: ${clientId}.`);
     
-    // Send clipboard data to client
     client.emit('clipboardData', {
       entries: clipboard.entries,
       connectedUsers: this.roomUserCount[roomCode],
       expiresIn,
     });
     
-    // Broadcast updated user count to all clients in the room
+    this.logger.log(`Emitting userCount to room ${roomCode}.`);
     this.server.to(roomCode).emit('userCount', this.roomUserCount[roomCode]);
     
-    this.logger.log(`Client ${clientId} joined room ${roomCode}`);
+    this.logger.log(`Client ${clientId} (SocketID: ${client.id}) successfully joined room ${roomCode}`);
   }
 
   @SubscribeMessage('addEntry')
@@ -136,6 +138,13 @@ export class ClipboardGateway implements OnGatewayInit, OnGatewayConnection, OnG
     @MessageBody() data: { roomCode: string; content: string; clientId: string },
   ) {
     const { roomCode, content, clientId } = data;
+
+    // Verify client is in the correct room
+    if (!client.rooms.has(roomCode)) {
+      this.logger.warn(`Client ${client.id} (clientId: ${clientId}) attempted to add entry to ${roomCode} without being in it.`);
+      client.emit('error', { message: 'Not authorized for this room.' });
+      return;
+    }
     
     this.logger.log(`Adding entry to room ${roomCode} from client ${clientId}`);
     
@@ -172,6 +181,13 @@ export class ClipboardGateway implements OnGatewayInit, OnGatewayConnection, OnG
     @MessageBody() data: { roomCode: string; entryId: string; clientId: string },
   ) {
     const { roomCode, entryId, clientId } = data;
+
+    // Verify client is in the correct room
+    if (!client.rooms.has(roomCode)) {
+      this.logger.warn(`Client ${client.id} (clientId: ${clientId}) attempted to delete entry from ${roomCode} without being in it.`);
+      client.emit('error', { message: 'Not authorized for this room.' });
+      return;
+    }
     
     // Delete entry from clipboard
     const success = await this.clipboardService.deleteEntry(roomCode, entryId);
@@ -196,6 +212,13 @@ export class ClipboardGateway implements OnGatewayInit, OnGatewayConnection, OnG
     @MessageBody() data: { roomCode: string; clientId: string },
   ) {
     const { roomCode, clientId } = data;
+
+    // Verify client is in the correct room
+    if (!client.rooms.has(roomCode)) {
+      this.logger.warn(`Client ${client.id} (clientId: ${clientId}) attempted to clear clipboard ${roomCode} without being in it.`);
+      client.emit('error', { message: 'Not authorized for this room.' });
+      return;
+    }
     
     // Clear clipboard
     const success = await this.clipboardService.clearClipboard(roomCode);

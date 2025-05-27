@@ -19,17 +19,18 @@ export default function RootLayout({
         <meta name="theme-color" content="#121212" />
       </head>
       <body>
-        <div className="relative min-h-screen">
+        <div className="relative">
           {/* Decorative elements */}
           <div className="fixed inset-0 z-[-1] overflow-hidden">
             <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-gradient-radial from-primary/5 to-transparent opacity-30 blur-3xl" />
             <div className="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-gradient-radial from-secondary/5 to-transparent opacity-30 blur-3xl" />
           </div>
-          
-          <main className="min-h-screen">
+
+          <main className="flex flex-col min-h-screen">
             {children}
           </main>
         </div>
+
       </body>
     </html>
   );
