@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { RedisService } from '../common/redis/redis.service';
 import { v4 as uuidv4 } from 'uuid';
+import { FileEntry } from '../file/file.service';
 
 export interface ClipboardEntry {
   id: string;
@@ -12,6 +13,7 @@ export interface ClipboardEntry {
 export interface Clipboard {
   id: string;
   entries: ClipboardEntry[];
+  files?: FileEntry[];
   password?: string;
   createdAt: string;
   lastActivity: string;
@@ -222,7 +224,7 @@ export class ClipboardService {
   /**
    * Save a clipboard to Redis
    */
-  private async saveClipboard(roomCode: string, clipboard: Clipboard): Promise<void> {
+  async saveClipboard(roomCode: string, clipboard: Clipboard): Promise<void> {
     const key = this.getClipboardKey(roomCode);
     await this.redisService.setWithExpiry(
       key,

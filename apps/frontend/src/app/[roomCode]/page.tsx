@@ -217,11 +217,13 @@ export default function ClipboardRoom() {
                 )}
               </div>
               
+              {/* Space for tabs */}
+              
               {/* Tabs Navigation */}
-              <div className="flex border-b border-surface-hover mb-4">
+              <div className="flex border-b border-surface-hover mb-6">
                 <button
                   onClick={() => setActiveTab('entries')}
-                  className={`flex items-center px-4 py-2 border-b-2 font-medium text-sm ${
+                  className={`flex items-center px-4 py-3 border-b-2 font-medium text-sm ${
                     activeTab === 'entries'
                       ? 'border-primary text-primary'
                       : 'border-transparent text-text-secondary hover:text-text-primary hover:border-surface-hover'
@@ -229,16 +231,14 @@ export default function ClipboardRoom() {
                 >
                   <FileText className="w-4 h-4 mr-2" />
                   Text Entries
-                  {entries.length > 0 && (
-                    <span className="ml-2 bg-surface-hover text-text-secondary text-xs px-2 py-0.5 rounded-full">
-                      {entries.length}
-                    </span>
-                  )}
+                  <span className="ml-2 bg-surface-hover text-text-secondary text-xs px-2 py-0.5 rounded-full">
+                    {entries.length}
+                  </span>
                 </button>
                 
                 <button
                   onClick={() => setActiveTab('files')}
-                  className={`flex items-center px-4 py-2 border-b-2 font-medium text-sm ${
+                  className={`flex items-center px-4 py-3 border-b-2 font-medium text-sm ${
                     activeTab === 'files'
                       ? 'border-primary text-primary'
                       : 'border-transparent text-text-secondary hover:text-text-primary hover:border-surface-hover'
@@ -246,11 +246,9 @@ export default function ClipboardRoom() {
                 >
                   <FileIcon className="w-4 h-4 mr-2" />
                   Files
-                  {files.length > 0 && (
-                    <span className="ml-2 bg-surface-hover text-text-secondary text-xs px-2 py-0.5 rounded-full">
-                      {files.length}
-                    </span>
-                  )}
+                  <span className="ml-2 bg-surface-hover text-text-secondary text-xs px-2 py-0.5 rounded-full">
+                    {files.length}
+                  </span>
                 </button>
               </div>
 

@@ -1,0 +1,50 @@
+services:
+  frontend:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - ./apps/frontend:/app
+      - /app/node_modules
+      - /app/.next
+    ports:
+      - "3000:3000"
+    command: sh -c "npm i -g pnpm && pnpm install && pnpm run dev"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  backend:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - ./apps/backend:/app
+      - /app/node_modules
+      - /app/dist
+      - ./uploads:/app/uploads # Mount uploads directory for file storage
+    ports:
+      - "3001:3001" # Single port for both API and WebSocket
+    env_file:
+      - ./apps/backend/.env
+    command: sh -c "npm i -g pnpm && pnpm install && pnpm run dev"
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - storage-network
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - storage-network
+
+networks:
+  storage-network:
+    driver: bridge
+
+volumes:
+  redis_data:

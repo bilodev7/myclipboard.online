@@ -99,7 +99,13 @@ export default function FileUploadComponent({ roomCode, clientId, onFileUploaded
   };
 
   return (
-    <div className="mb-4">
+    <div className="mb-6 sm:mb-8 relative">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <h2 className="text-lg font-semibold text-text-primary flex items-center">
+          <Upload className="h-5 w-5 mr-2 text-secondary" />
+          Add File
+        </h2>
+      </div>
       <div
         className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors ${
           isDragging 

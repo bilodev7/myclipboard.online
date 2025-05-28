@@ -14,8 +14,28 @@ export default function JoinClipboardCard() {
   const [isLoading, setIsLoading] = useState(false);
   const [clipboardExists, setClipboardExists] = useState(true);
   const [isComplete, setIsComplete] = useState(false);
+  const [lastVisitedClipboard, setLastVisitedClipboard] = useState('');
   const router = useRouter();
-  const { addClipboard } = useSavedClipboards();
+  const { addClipboard, savedClipboards } = useSavedClipboards();
+  
+  // Get the last visited clipboard when component mounts and pre-fill the input
+  useEffect(() => {
+    if (savedClipboards.length > 0) {
+      // Sort by lastVisited date and get the most recent one
+      const sorted = [...savedClipboards].sort((a, b) => 
+        new Date(b.lastVisited).getTime() - new Date(a.lastVisited).getTime()
+      );
+      const lastCode = sorted[0].roomCode;
+      setLastVisitedClipboard(lastCode);
+      
+      // Pre-fill the input with the last visited clipboard code
+      setRoomCode(lastCode);
+      
+      // Check if it's valid
+      const isValid = lastCode.length === 4 && isValidRoomCode(lastCode);
+      setIsComplete(isValid);
+    }
+  }, [savedClipboards]);
 
   // Validate room code format (6 alphanumeric characters, uppercase)
   const isValidRoomCode = (code: string): boolean => {
@@ -96,16 +116,19 @@ export default function JoinClipboardCard() {
                 onPaste={(e) => {
                   e.preventDefault()
                   const pastedValue = e.clipboardData?.getData('text') || '';
-                  const filteredValue = pastedValue.replace(/[^a-zA-Z0-9]/g, '');
+                  const filteredValue = pastedValue.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
                   if (filteredValue.length === 4) {
                     setRoomCode(filteredValue);
                   }
                 }}
                 value={roomCode}
+                placeholder={lastVisitedClipboard}
                 onChange={(value: string) => {
-                  setRoomCode(value);
+                  // Convert to uppercase automatically
+                  const uppercaseValue = value.toUpperCase();
+                  setRoomCode(uppercaseValue);
                   setClipboardExists(true);
-                  const isValid = value.length === 4 && isValidRoomCode(value);
+                  const isValid = uppercaseValue.length === 4 && isValidRoomCode(uppercaseValue);
                   setIsComplete(isValid)
                 }}
                 numInputs={4}
@@ -160,7 +183,8 @@ export default function JoinClipboardCard() {
                 setRoomCode(code);
                 setClipboardExists(true);
                 setIsComplete(true);
-                handleJoinClipboard();
+                // Don't automatically join - just fill the input
+                // This allows users to see the code before joining
               }}
             />
           </div>

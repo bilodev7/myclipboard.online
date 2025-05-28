@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { ClipboardIcon } from 'lucide-react';
+import Logo from '@/components/Logo';
 
 interface ClipboardHeaderProps {
   roomCode: string;
@@ -29,23 +31,20 @@ export default function ClipboardHeader({
       <div className="container mx-auto px-3 sm:px-4 max-w-4xl">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-1 sm:gap-2">
           <div className="flex flex-wrap items-center gap-2">
-            <Link href="/" className="mr-1">
+            <Link href="/">
               <button className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-surface hover:bg-surface-hover border border-surface-hover transition-all duration-200 shadow-sm hover:shadow-md" title="Back to home">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
               </button>
             </Link>
-            <h1 className="text-xl sm:text-2xl font-bold text-text-primary flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
+            <h1 className="text-xl sm:text-2xl font-bold flex items-center">
               <button
                 onClick={handleCopyLink}
-                className={`text-primary ml-1 sm:ml-2 font-mono px-2.5 py-0.5 rounded flex items-center ${linkCopied ? 'bg-primary/20' : 'hover:bg-primary/10'} transition-colors duration-200`}
+                className={`text-primary font-mono px-2 py-2 rounded flex items-center ${linkCopied ? 'bg-primary/20' : 'hover:bg-primary/10'} transition-colors duration-200`}
                 title="Click to copy room link"
               >
-                <span className="leading-normal">{roomCode.substring(0, 2)}-{roomCode.substring(2)}</span>
+                <span className="leading-none -mb-1">{roomCode.substring(0, 2)}-{roomCode.substring(2)}</span>
                 {linkCopied && (
                   <span className="ml-2 text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded inline-flex items-center">Copied!</span>
                 )}
@@ -65,8 +64,8 @@ export default function ClipboardHeader({
               <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-0.5 sm:mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
-              <span className="hidden xs:inline">End-to-End Encrypted</span>
-              <span className="xs:hidden">E2E</span>
+              <span className="hidden sm:inline">End-to-End Encrypted</span>
+              <span className="sm:hidden">E2E</span>
             </div>
 
             <div className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-amber-500/10 text-amber-500 rounded-full text-xs flex items-center">
@@ -77,10 +76,17 @@ export default function ClipboardHeader({
                 <span>Expires in {expiresIn}</span>
               ) : (
                 <>
-                  <span className="hidden xs:inline">Active for 24 hours</span>
-                  <span className="xs:hidden">24h</span>
+                  <span className="hidden sm:inline">Active for 24 hours</span>
+                  <span className="sm:hidden">24h</span>
                 </>
               )}
+            </div>
+
+            <div className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-primary/10 text-primary rounded-full text-xs flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-0.5 sm:mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              <span>Real-time sync</span>
             </div>
           </div>
         </div>

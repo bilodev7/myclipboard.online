@@ -52,7 +52,13 @@ export default function FileList({ files, onDeleteFile, roomCode }: FileListProp
   };
 
   return (
-    <div className="mt-6">
+    <div className="mt-6 sm:mt-8">
+      <div className="flex items-center justify-between mb-4 sticky top-0 bg-background/90 backdrop-blur-sm py-2 z-10">
+        <div className="flex-1"></div>
+        <div className="flex items-center gap-2">
+        </div>
+      </div>
+
       {previewFile && (
         <FilePreview
           fileId={previewFile.id}
@@ -64,8 +70,17 @@ export default function FileList({ files, onDeleteFile, roomCode }: FileListProp
       )}
 
       <div className="space-y-2">
-        {files.map((file) => (
-          <div
+        {files.length === 0 ? (
+          <div className="border border-dashed border-surface-hover rounded-lg flex flex-col items-center justify-center py-12 mt-4">
+            <div className="w-16 h-16 bg-surface-hover rounded-full flex items-center justify-center mb-4">
+              <FileIcon className="h-8 w-8 text-text-secondary/50" />
+            </div>
+            <p className="text-text-secondary mb-2">No files yet</p>
+            <p className="text-text-secondary/70 text-sm">Upload your first file using the form above</p>
+          </div>
+        ) : (
+          files.map((file) => (
+            <div
             key={file.id}
             className={`flex items-center p-3 bg-surface/80 rounded-lg border border-surface-hover hover:border-primary/30 transition-colors relative ${canPreview(file) ? 'cursor-pointer' : ''}`}
             onClick={() => canPreview(file) ? setPreviewFile(file) : null}
@@ -149,7 +164,8 @@ export default function FileList({ files, onDeleteFile, roomCode }: FileListProp
               </div>
             )}
           </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );

@@ -1,14 +1,16 @@
 # Shared Clipboard
 
-A real-time shared clipboard application that allows users to create and join clipboard rooms to share text content seamlessly.
+An open-source real-time shared clipboard application that allows users to create and join clipboard rooms to share text content and files seamlessly.
 
 ## Features
 
 - Create new clipboard rooms with optional password protection
 - Join existing clipboard rooms with a room code
 - Real-time updates of clipboard contents for all connected users
-- Copy individual entries with one click
-- Delete entries
+- Upload and share files within clipboard rooms
+- Download shared files with a single click
+- Copy individual text entries with one click
+- Delete entries and files
 - See how many users are connected to a clipboard
 - Automatic clipboard expiration after 24 hours of inactivity
 - Responsive design for mobile and desktop
@@ -19,15 +21,24 @@ A real-time shared clipboard application that allows users to create and join cl
 - **Frontend**: Next.js with TypeScript, Tailwind CSS
 - **Backend**: NestJS with TypeScript
 - **Database**: Redis
+- **File Storage**: MinIO (S3-compatible object storage)
 - **Real-time Communication**: Socket.IO
+- **Containerization**: Docker & Docker Compose
 
 ## Prerequisites
 
+### For Local Development
 - Node.js (v16 or later)
 - pnpm (v7 or later)
 - Redis server
 
+### For Containerized Deployment
+- Docker
+- Docker Compose
+
 ## Getting Started
+
+### Local Development
 
 1. Clone the repository
 2. Install dependencies
@@ -56,14 +67,30 @@ pnpm --filter=backend dev
 
 5. Open your browser and navigate to `http://localhost:3000`
 
+### Using Docker Compose
+
+1. Clone the repository
+2. Build and start the containers
+```bash
+docker-compose up -d
+```
+
+3. Open your browser and navigate to `http://localhost:3000`
+
+The containerized setup includes:
+- Frontend on port 3000
+- Backend on port 3001
+- Redis on port 6379 (internal)
+- MinIO on ports 9000 (API) and 9001 (Console)
+
 ## Project Structure
 
 ```
 shared-clipboard/
-├── packages/
+├── apps/
 │   ├── frontend/     # Next.js frontend application
 │   └── backend/      # NestJS backend application
-├── pnpm-workspace.yaml
+├── docker-compose.yml
 └── package.json
 ```
 
@@ -79,28 +106,63 @@ NEXT_PUBLIC_SOCKET_URL=http://localhost:3001
 
 ### Backend
 
-Create a `.env` file in the `packages/backend` directory:
+Create a `.env` file in the `apps/backend` directory:
 
 ```
 PORT=3001
 REDIS_HOST=localhost
 REDIS_PORT=6379
 # REDIS_PASSWORD=your_redis_password  # Uncomment and set if needed
+
+# MinIO Configuration (for file storage)
+MINIO_ENDPOINT=localhost
+MINIO_PORT=9000
+MINIO_USE_SSL=false
+MINIO_ACCESS_KEY=minioadmin
+MINIO_SECRET_KEY=minioadmin
 ```
 
 ## Deployment
 
-### Frontend
+### Using Docker (Recommended)
+
+The entire application stack can be deployed using Docker Compose:
+
+```bash
+# Build and start all services
+docker-compose up -d --build
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+```
+
+For production deployment, you may want to customize the `docker-compose.yml` file to use persistent volumes for Redis and MinIO data.
+
+### Manual Deployment
+
+#### Frontend
 
 The Next.js frontend can be deployed to platforms like Vercel or Netlify.
 
-### Backend
+#### Backend
 
 The NestJS backend can be deployed to platforms like Heroku, AWS, or DigitalOcean.
 
-### Redis
+#### Redis and MinIO
 
-For production, it's recommended to use a managed Redis service like Redis Labs, AWS ElastiCache, or DigitalOcean Managed Databases.
+For production, it's recommended to use managed services:
+- Redis: Redis Labs, AWS ElastiCache, or DigitalOcean Managed Databases
+- File Storage: AWS S3, DigitalOcean Spaces, or self-hosted MinIO on a server
+
+## File Upload Limits
+
+By default, the application limits file uploads to 10MB per file. This can be configured in the following locations:
+
+- Backend: `src/file/file.controller.ts` - Modify the `MaxFileSizeValidator` value
+- Frontend: `src/app/[roomCode]/components/FileUploadComponent.tsx` - Update the file size validation check
 
 ## License
 
