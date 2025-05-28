@@ -43,6 +43,13 @@ module.exports = {
         'fadeIn': 'fadeIn 0.3s ease-in-out',
         'scaleIn': 'scaleIn 0.3s ease-out',
         'slideUpIn': 'slideUpIn 0.3s ease-out',
+        'slideIn': 'slideIn 0.3s ease-out',
+      },
+      keyframes: {
+        slideIn: {
+          '0%': { transform: 'translateX(100%)', opacity: 0 },
+          '100%': { transform: 'translateX(0)', opacity: 1 },
+        },
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import io, { Socket } from 'socket.io-client';
 import { ClipboardEntryType } from '@/app/[roomCode]/components/ClipboardEntry';
+import { FileEntryType } from '@/app/[roomCode]/components/FileEntry';
+import { apiUrl, socketUrl } from '../constants';
 
 interface UseSocketManagerOptions {
   roomCode: string;
@@ -9,6 +11,7 @@ interface UseSocketManagerOptions {
 
 interface UseSocketManagerResult {
   entries: ClipboardEntryType[];
+  files: FileEntryType[];
   connectedUsers: number;
   expiresIn: string | null;
   isLoading: boolean;
@@ -17,10 +20,12 @@ interface UseSocketManagerResult {
   addEntry: (content: string) => void;
   deleteEntry: (entryId: string) => void;
   clearClipboard: () => void;
+  deleteFile: (fileId: string) => void;
 }
 
 export function useSocketManager({ roomCode, clientId }: UseSocketManagerOptions): UseSocketManagerResult {
   const [entries, setEntries] = useState<ClipboardEntryType[]>([]);
+  const [files, setFiles] = useState<FileEntryType[]>([]);
   const [connectedUsers, setConnectedUsers] = useState(1);
   const [expiresIn, setExpiresIn] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -58,6 +63,22 @@ export function useSocketManager({ roomCode, clientId }: UseSocketManagerOptions
     }
   };
 
+  const deleteFile = (fileId: string) => {
+    if (socketRef.current) {
+      socketRef.current.emit('deleteFile', {
+        roomCode,
+        fileId,
+        clientId,
+      });
+
+      fetch(`${apiUrl}/clipboard/${roomCode}/files/${fileId}`, {
+        method: 'DELETE',
+      }).catch(err => {
+        console.error('Error deleting file:', err);
+      });
+    }
+  };
+
   // Validate room code format (6 alphanumeric characters, uppercase)
   const isValidRoomCode = (code: string): boolean => {
     const roomCodeRegex = /^[A-Z0-9]{4}$/;
@@ -72,10 +93,8 @@ export function useSocketManager({ roomCode, clientId }: UseSocketManagerOptions
       return;
     }
 
-    const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3001';
-
-    // Connect to the Socket.io server with explicit transport options
-    socketRef.current = io(SOCKET_URL, {
+    // Connect directly to the Socket.IO server using our dedicated WebSocket port
+    socketRef.current = io(socketUrl, {
       query: { roomCode },
       transports: ['websocket', 'polling'],
       reconnectionAttempts: 5,
@@ -121,7 +140,7 @@ export function useSocketManager({ roomCode, clientId }: UseSocketManagerOptions
       console.error('Socket error:', data.message);
       setError(data.message);
       setIsLoading(false);
-      
+
       // If clipboard not found, redirect back to home after a delay
       // The backend now handles non-existent rooms by disconnecting, 
       // but this client-side redirect can be a fallback or for specific error messages.
@@ -133,9 +152,12 @@ export function useSocketManager({ roomCode, clientId }: UseSocketManagerOptions
     });
 
     // Listen for initial clipboard data
-    socketRef.current.on('clipboardData', (data: { entries: ClipboardEntryType[], connectedUsers: number, expiresIn?: string }) => {
+    socketRef.current.on('clipboardData', (data: { entries: ClipboardEntryType[], files?: FileEntryType[], connectedUsers: number, expiresIn?: string }) => {
       if (dataLoadTimeoutRef.current) clearTimeout(dataLoadTimeoutRef.current); // Clear timeout
       setEntries(data.entries);
+      if (data.files) {
+        setFiles(data.files);
+      }
       setConnectedUsers(data.connectedUsers);
       if (data.expiresIn) {
         setExpiresIn(data.expiresIn);
@@ -163,6 +185,16 @@ export function useSocketManager({ roomCode, clientId }: UseSocketManagerOptions
       setExpiresIn(time);
     });
 
+    // Listen for file upload
+    socketRef.current.on('fileUploaded', (fileEntry: FileEntryType) => {
+      setFiles((prev: FileEntryType[]) => [fileEntry, ...prev]);
+    });
+
+    // Listen for file deletion
+    socketRef.current.on('fileDeleted', (fileId: string) => {
+      setFiles((prev: FileEntryType[]) => prev.filter(file => file.id !== fileId));
+    });
+
     // Cleanup on unmount
     return () => {
       console.log(`Cleaning up SocketManager for ${roomCode}`);
@@ -180,7 +212,9 @@ export function useSocketManager({ roomCode, clientId }: UseSocketManagerOptions
         socketRef.current.off('deleteEntry');
         socketRef.current.off('userCount');
         socketRef.current.off('expirationUpdate');
-        
+        socketRef.current.off('fileUploaded');
+        socketRef.current.off('fileDeleted');
+
         // Then disconnect
         if (socketRef.current.connected) {
           socketRef.current.disconnect();
@@ -192,6 +226,7 @@ export function useSocketManager({ roomCode, clientId }: UseSocketManagerOptions
 
   return {
     entries,
+    files,
     connectedUsers,
     expiresIn,
     isLoading,
@@ -199,6 +234,7 @@ export function useSocketManager({ roomCode, clientId }: UseSocketManagerOptions
     socketRef,
     addEntry,
     deleteEntry,
-    clearClipboard
+    clearClipboard,
+    deleteFile
   };
 }

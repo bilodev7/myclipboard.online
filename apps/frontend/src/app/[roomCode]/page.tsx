@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { FileText, FileIcon } from 'lucide-react';
 
 // Import components
 import ClipboardHeader from './components/ClipboardHeader';
@@ -10,10 +11,14 @@ import ClipboardEntryList from './components/ClipboardEntryList';
 import LoadingState from './components/LoadingState';
 import PasswordVerificationModal from './components/PasswordVerificationModal';
 import { ClipboardEntryType } from './components/ClipboardEntry';
+import FileUploadComponent from './components/FileUploadComponent';
+import FileList from './components/FileList';
+import { FileEntryType } from './components/FileEntry';
 
 // Import custom hooks
 import { useSocketManager } from '@/lib/hooks/useSocketManager';
 import { useSavedClipboards } from '@/lib/hooks/useSavedClipboards';
+import { apiUrl } from '@/lib/constants';
 
 export default function ClipboardRoom() {
   const params = useParams();
@@ -25,20 +30,24 @@ export default function ClipboardRoom() {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [isCheckingPassword, setIsCheckingPassword] = useState(true);
   const [isPasswordVerified, setIsPasswordVerified] = useState(false);
-  
+  const [activeTab, setActiveTab] = useState<'entries' | 'files'>('entries');
+
   // Use saved clipboards hook to track clipboard history
   const { addClipboard } = useSavedClipboards();
 
   // Use our custom socket manager hook
   const {
     entries,
+    files,
     connectedUsers,
     expiresIn,
     isLoading,
     error,
+    socketRef,
     addEntry: handleAddEntry,
     deleteEntry: handleDeleteEntry,
-    clearClipboard: handleClearClipboard
+    clearClipboard: handleClearClipboard,
+    deleteFile: handleDeleteFile
   } = useSocketManager({
     roomCode,
     clientId: clientId.current
@@ -55,6 +64,21 @@ export default function ClipboardRoom() {
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
     // You could add a toast notification here
+  };
+
+  // Handle file uploaded event
+  const handleFileUploaded = (fileEntry: FileEntryType) => {
+    // Emit socket event to notify other clients
+    if (socketRef) {
+      socketRef.current?.emit('fileUploaded', {
+        roomCode,
+        fileEntry,
+        clientId: clientId.current,
+      });
+    }
+    
+    // Switch to files tab after upload to show the newly uploaded file
+    setActiveTab('files');
   };
 
   // Check for password protection when component mounts
@@ -83,7 +107,6 @@ export default function ClipboardRoom() {
   const checkPasswordProtection = async () => {
     try {
       setIsCheckingPassword(true);
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
       const response = await fetch(`${apiUrl}/clipboard/${roomCode}/exists`);
 
       if (!response.ok) {
@@ -105,7 +128,7 @@ export default function ClipboardRoom() {
       } else {
         // No password, proceed directly
         setIsPasswordVerified(true);
-        
+
         // Save to clipboard history since we've successfully accessed it
         addClipboard(roomCode);
       }
@@ -119,7 +142,6 @@ export default function ClipboardRoom() {
   // Verify clipboard password
   const verifyPassword = async (password: string): Promise<boolean> => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
       const response = await fetch(`${apiUrl}/clipboard/${roomCode}/verify`, {
         method: 'POST',
         headers: {
@@ -131,10 +153,10 @@ export default function ClipboardRoom() {
       if (response.ok) {
         setIsPasswordVerified(true);
         setShowPasswordModal(false);
-        
+
         // Save to clipboard history after successful password verification
         addClipboard(roomCode);
-        
+
         return true;
       }
 
@@ -182,17 +204,74 @@ export default function ClipboardRoom() {
           {/* Scrollable content area - Only this part should scroll */}
           <div className="flex-1 overflow-y-auto">
             <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-4xl">
-              {/* Add Entry Form */}
-              <ClipboardEntryForm onAddEntry={handleAddEntry} />
+              {/* Unified Input Section */}
+              <div className="mb-6">
+                {activeTab === 'entries' ? (
+                  <ClipboardEntryForm onAddEntry={handleAddEntry} />
+                ) : (
+                  <FileUploadComponent
+                    roomCode={roomCode}
+                    clientId={clientId.current}
+                    onFileUploaded={handleFileUploaded}
+                  />
+                )}
+              </div>
+              
+              {/* Tabs Navigation */}
+              <div className="flex border-b border-surface-hover mb-4">
+                <button
+                  onClick={() => setActiveTab('entries')}
+                  className={`flex items-center px-4 py-2 border-b-2 font-medium text-sm ${
+                    activeTab === 'entries'
+                      ? 'border-primary text-primary'
+                      : 'border-transparent text-text-secondary hover:text-text-primary hover:border-surface-hover'
+                  } transition-colors`}
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  Text Entries
+                  {entries.length > 0 && (
+                    <span className="ml-2 bg-surface-hover text-text-secondary text-xs px-2 py-0.5 rounded-full">
+                      {entries.length}
+                    </span>
+                  )}
+                </button>
+                
+                <button
+                  onClick={() => setActiveTab('files')}
+                  className={`flex items-center px-4 py-2 border-b-2 font-medium text-sm ${
+                    activeTab === 'files'
+                      ? 'border-primary text-primary'
+                      : 'border-transparent text-text-secondary hover:text-text-primary hover:border-surface-hover'
+                  } transition-colors`}
+                >
+                  <FileIcon className="w-4 h-4 mr-2" />
+                  Files
+                  {files.length > 0 && (
+                    <span className="ml-2 bg-surface-hover text-text-secondary text-xs px-2 py-0.5 rounded-full">
+                      {files.length}
+                    </span>
+                  )}
+                </button>
+              </div>
 
-              {/* Clipboard Entries */}
-              <ClipboardEntryList
-                entries={entries}
-                copiedId={copied}
-                onCopyEntry={handleCopyEntry}
-                onDeleteEntry={handleDeleteEntry}
-                onClearAll={handleClearClipboard}
-              />
+              {/* Tab Content */}
+              <div className="mt-4">
+                {activeTab === 'entries' ? (
+                  <ClipboardEntryList
+                    entries={entries}
+                    copiedId={copied}
+                    onCopyEntry={handleCopyEntry}
+                    onDeleteEntry={handleDeleteEntry}
+                    onClearAll={handleClearClipboard}
+                  />
+                ) : (
+                  <FileList
+                    files={files}
+                    onDeleteFile={handleDeleteFile}
+                    roomCode={roomCode}
+                  />
+                )}
+              </div>
             </main>
           </div>
         </>

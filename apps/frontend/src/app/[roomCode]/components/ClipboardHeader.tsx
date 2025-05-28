@@ -45,7 +45,7 @@ export default function ClipboardHeader({
                 className={`text-primary ml-1 sm:ml-2 font-mono px-2.5 py-0.5 rounded flex items-center ${linkCopied ? 'bg-primary/20' : 'hover:bg-primary/10'} transition-colors duration-200`}
                 title="Click to copy room link"
               >
-                <span className="leading-normal">{roomCode}</span>
+                <span className="leading-normal">{roomCode.substring(0, 2)}-{roomCode.substring(2)}</span>
                 {linkCopied && (
                   <span className="ml-2 text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded inline-flex items-center">Copied!</span>
                 )}

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import CreateClipboardCard from '@/components/CreateClipboardCard';
 import JoinClipboardCard from '@/components/JoinClipboardCard';
 import FeaturesSection from '@/components/FeaturesSection';
+import Logo from '@/components/Logo';
 
 export default function Home() {
   return (
@@ -30,34 +31,22 @@ export default function Home() {
         </a>
       </div>
 
-      <div className="w-full max-w-5xl mx-auto flex-1 flex flex-col p-4 sm:p-6">
+      <div className="w-full max-w-5xl mx-auto flex-1 flex flex-col p-6 sm:p-8 sm:py-14">
         {/* Main Content Container - This keeps content centered vertically */}
         <div className="flex-1 flex flex-col justify-center mt-20 sm:mt-0">
           {/* Logo and Title */}
-          <div className="text-center mb-10 sm:mb-12">
-            <div className="inline-block mb-5 relative">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-primary/80 to-secondary/80 rounded-xl flex items-center justify-center shadow-glow overflow-hidden">
-
-                {/* Main clipboard icon */}
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 sm:h-10 sm:w-10 text-white absolute" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-
-                {/* Sync arrows animation */}
-                <div className="animate-pulse opacity-70">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 sm:h-12 sm:w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                  </svg>
-                </div>
+          <div className="mb-10 sm:mb-12 flex flex-col items-center">
+            <div className="flex items-center gap-3">
+              <div className='overflow-hidden rounded-lg'>
+                <Logo />
               </div>
-              <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-emerald-500 rounded-full flex items-center justify-center shadow-md">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4" />
-                </svg>
-              </div>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+                Shared Clipboard
+              </h1>
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-3 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Shared Clipboard</h1>
-            <p className="text-lg text-text-secondary">Share text snippets in real-time</p>
+            <p className="text-lg text-center text-text-secondary mt-2">
+              Share text snippets and files in real-time
+            </p>
           </div>
 
           {/* Cards Container - Side by side on desktop, stacked on mobile */}

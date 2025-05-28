@@ -80,7 +80,7 @@ const features: Feature[] = [
 
 export default function FeaturesSection() {
   return (
-    <div className="grid grid-cols-1 gap-6 mb-10">
+    <div className="grid grid-cols-1 gap-6">
       {/* Section Title */}
       <div className="text-center mb-4">
         <h2 className="text-2xl sm:text-3xl font-bold text-text-primary">Powerful Features</h2>

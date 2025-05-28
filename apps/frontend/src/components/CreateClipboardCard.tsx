@@ -3,12 +3,14 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import PasswordModal from './PasswordModal';
+import { useToast } from './ui/Toast';
+import { apiUrl } from '@/lib/constants';
 
 export default function CreateClipboardCard() {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const router = useRouter();
+  const { addToast } = useToast();
 
   const handleCreateClipboard = async (withPassword = false) => {
     if (withPassword) {
@@ -21,9 +23,7 @@ export default function CreateClipboardCard() {
 
   const createClipboard = async (passwordToUse?: string) => {
     setIsLoading(true);
-    setError('');
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
       const response = await fetch(`${apiUrl}/clipboard/create`, {
         method: 'POST',
         headers: {
@@ -45,7 +45,7 @@ export default function CreateClipboardCard() {
       }
     } catch (err: any) {
       console.error('Error creating clipboard:', err);
-      setError(err.message || 'An unexpected error occurred');
+      addToast(err.message || 'An unexpected error occurred', 'error', 'Error');
     } finally {
       setIsLoading(false);
       setShowPasswordModal(false);
@@ -58,6 +58,7 @@ export default function CreateClipboardCard() {
 
   return (
     <>
+
       <div className="flex-1 p-6 md:p-8 rounded-xl border border-surface-hover bg-surface/50 backdrop-blur-sm shadow-lg hover:shadow-glow-sm transition-all duration-300 ease-out relative overflow-hidden group">
         {/* Background elements */}
         <div className="absolute -top-10 -left-10 w-32 h-32 bg-primary/10 rounded-full animate-pulse-slow group-hover:scale-110 transition-transform duration-500"></div>
@@ -114,14 +115,7 @@ export default function CreateClipboardCard() {
           </div>
         </div>
 
-        {error && (
-          <div className="mt-4 p-3 bg-error/10 border border-error/30 text-error rounded-md text-sm flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span>{error}</span>
-          </div>
-        )}
+        {/* Error is now displayed as a toast notification */}
 
       </div>
 

@@ -10,11 +10,11 @@ interface PasswordModalProps {
   isLoading: boolean;
 }
 
-export default function PasswordModal({ 
-  isOpen, 
-  onClose, 
+export default function PasswordModal({
+  isOpen,
+  onClose,
   onSubmit,
-  isLoading 
+  isLoading
 }: PasswordModalProps) {
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
@@ -54,8 +54,8 @@ export default function PasswordModal({
       title="Set Password"
       icon={passwordIcon}
     >
-      <p className="text-text-secondary mb-4">
-        Create a password-protected clipboard. Anyone who wants to access this clipboard will need the password.
+      <p className="text-text-secondary mb-4 text-center">
+        Create a password-protected clipboard.
       </p>
 
       <div className="space-y-4">

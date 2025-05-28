@@ -7,6 +7,7 @@ import axios from 'axios';
 import { useSavedClipboards } from '../lib/hooks/useSavedClipboards';
 import SavedClipboardsButton from './SavedClipboardsButton';
 import { LogIn, AlertCircle, Loader } from 'lucide-react';
+import { apiUrl } from '@/lib/constants';
 
 export default function JoinClipboardCard() {
   const [roomCode, setRoomCode] = useState('');
@@ -44,7 +45,7 @@ export default function JoinClipboardCard() {
 
     try {
       // Check if clipboard exists
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/clipboard/${roomCode}/exists`);
+      const response = await axios.get(`${apiUrl}/clipboard/${roomCode}/exists`);
 
       if (response.data.exists) {
         // Save to recently visited clipboards
@@ -122,7 +123,7 @@ export default function JoinClipboardCard() {
                       }`}
                     key={index}
                   />
-                )}
+                )}                
                 inputType="text"
                 shouldAutoFocus
                 containerStyle="flex justify-center gap-2 sm:gap-3"

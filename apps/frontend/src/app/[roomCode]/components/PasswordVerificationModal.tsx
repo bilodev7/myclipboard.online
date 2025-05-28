@@ -8,6 +8,8 @@ interface PasswordVerificationModalProps {
   isOpen: boolean;
 }
 
+// TODO: make the modal below use the reusable Modal component
+
 export default function PasswordVerificationModal({
   onVerify,
   onCancel,
