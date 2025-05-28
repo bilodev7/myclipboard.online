@@ -13,7 +13,7 @@ export default function Home() {
       {/* GitHub Link */}
       <div className="absolute top-4 sm:right-4 left-1/2 sm:left-auto transform -translate-x-1/2 sm:-translate-x-0 flex space-x-3 items-center z-10">
         <a
-          href="https://github.com/username/shared-clipboard"
+          href="https://github.com/username/clipboard.online"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center px-3 py-1.5 rounded-lg border border-surface-hover bg-surface/50 backdrop-blur-sm hover:bg-surface-hover transition-colors duration-200 text-text-primary shadow-md hover:shadow-glow-sm group"
@@ -37,15 +37,15 @@ export default function Home() {
           {/* Logo and Title */}
           <div className="mb-10 sm:mb-12 flex flex-col items-center">
             <div className="flex items-center gap-3">
-              <div className='overflow-hidden rounded-lg'>
+              {/* <div className='overflow-hidden rounded-lg'>
                 <Logo />
-              </div>
+              </div> */}
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-                Shared Clipboard
+                Clipboard Online
               </h1>
             </div>
             <p className="text-lg text-center text-text-secondary mt-2">
-              Share text snippets and files in real-time
+              Real-time clipboard sharing for text and files
             </p>
           </div>
 
@@ -64,7 +64,7 @@ export default function Home() {
       {/* Footer */}
       <div className="text-center text-text-secondary text-xs sm:text-sm py-4 mt-auto border-t border-surface-hover">
         <p className="flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-2">
-          <span>{new Date().getFullYear()} Shared Clipboard</span>
+          <span>{new Date().getFullYear()} Clipboard Online</span>
           <span>A real-time clipboard sharing tool - Developed by Bilo</span>
         </p>
       </div>

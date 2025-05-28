@@ -3,9 +3,38 @@ import type { Metadata } from 'next';
 import { ToastProvider } from '@/components/ui/Toast';
 
 export const metadata: Metadata = {
-  title: 'Shared Clipboard',
-  description: 'A real-time shared clipboard application for seamless content sharing',
-  keywords: 'clipboard, sharing, real-time, collaboration',
+  title: 'Clipboard Online',
+  description: 'Real-time clipboard sharing for text and files across all your devices',
+  keywords: [
+    'clipboard',
+    'online',
+    'sharing',
+    'real-time',
+    'sync',
+    'files',
+    'text',
+    'collaboration',
+    'copy paste online',
+    'universal clipboard',
+    'cloud clipboard',
+    'shared clipboard',
+    'remote clipboard',
+    'device sync',
+    'cross-device copy',
+    'file transfer tool',
+    'text synchronization',
+    'productivity tool',
+    'multi-device clipboard',
+    'web clipboard',
+    'secure clipboard sharing',
+    'instant clipboard',
+    'digital clipboard',
+    'data transfer',
+    'seamless sharing',
+    'clipboard manager',
+    'online copy paste',
+    'pasteboard online',
+  ],
 };
 
 export default function RootLayout({
