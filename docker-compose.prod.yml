@@ -5,9 +5,9 @@ services:
     volumes:
       - ./apps/frontend:/app
     ports:
-      - "172.17.0.1:3000:3000"
+      - "172.17.0.1:3000:3000" # 172.17.0.1 is the internal docker network
     environment:
-      - NEXT_PUBLIC_URL=http://clipboard.bilofy.com
+      - NEXT_PUBLIC_URL=https://myclipboard.online
     command: sh -c "npm i -g pnpm && pnpm install && pnpm run build && pnpm run start"
     depends_on:
       - backend
@@ -20,7 +20,7 @@ services:
       - ./apps/backend:/app
       - ./uploads:/app/uploads # Mount uploads directory for file storage
     ports:
-      - "3001:3000" # This port must be exported and accessed by the frontend for the socket connection
+      - "172.17.0.1:3001:3001" # This port must be exported and accessed by the frontend for the socket connection
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379

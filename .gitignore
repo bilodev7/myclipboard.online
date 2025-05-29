@@ -1,5 +1,6 @@
 # === personal ===
 deploy.sh
+uploads
 
 # Dependencies
 node_modules

@@ -8,7 +8,7 @@ services:
       - "3000:3000"
     environment:
       # - NEXT_PUBLIC_URL=http://localhost:3000
-      - NEXT_PUBLIC_URL=http://clipboard.bilofy.com
+      - NEXT_PUBLIC_URL=https://myclipboard.online
     command: sh -c "npm i -g pnpm && pnpm install && pnpm run dev"
     depends_on:
       - backend

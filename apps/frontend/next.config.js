@@ -5,7 +5,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://backend:3001/api/:path*' // dockers network
+        destination: 'http://docker0.local:3001/api/:path*' // my internal docker network. bad practice but it works
       },
     ];
   },

@@ -24,7 +24,7 @@ interface RoomUserCount {
     credentials: true
   },
   transports: ['websocket', 'polling'],
-  namespace: '/socket.io',
+  namespace: '/',
 })
 export class ClipboardGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = new Logger(ClipboardGateway.name);
