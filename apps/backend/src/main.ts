@@ -22,20 +22,20 @@ class CustomIoAdapter extends IoAdapter {
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
-  
+
   // Enable CORS for HTTP requests
   app.enableCors({
     origin: '*',
     methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS'],
     credentials: true,
   });
-  
+
   // Use custom adapter for WebSockets
   app.useWebSocketAdapter(new CustomIoAdapter(app));
-  
+
   // Set global prefix for REST API
   app.setGlobalPrefix('api');
-  
+
   const port = process.env.PORT || 3001;
   await app.listen(port);
   logger.log(`Application listening on port ${port}`);

@@ -17,20 +17,20 @@ export default function JoinClipboardCard() {
   const [lastVisitedClipboard, setLastVisitedClipboard] = useState('');
   const router = useRouter();
   const { addClipboard, savedClipboards } = useSavedClipboards();
-  
+
   // Get the last visited clipboard when component mounts and pre-fill the input
   useEffect(() => {
     if (savedClipboards.length > 0) {
       // Sort by lastVisited date and get the most recent one
-      const sorted = [...savedClipboards].sort((a, b) => 
+      const sorted = [...savedClipboards].sort((a, b) =>
         new Date(b.lastVisited).getTime() - new Date(a.lastVisited).getTime()
       );
       const lastCode = sorted[0].roomCode;
       setLastVisitedClipboard(lastCode);
-      
+
       // Pre-fill the input with the last visited clipboard code
       setRoomCode(lastCode);
-      
+
       // Check if it's valid
       const isValid = lastCode.length === 4 && isValidRoomCode(lastCode);
       setIsComplete(isValid);
@@ -146,7 +146,7 @@ export default function JoinClipboardCard() {
                       }`}
                     key={index}
                   />
-                )}                
+                )}
                 inputType="text"
                 shouldAutoFocus
                 containerStyle="flex justify-center gap-2 sm:gap-3"

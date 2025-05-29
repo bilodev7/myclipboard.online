@@ -1,3 +1,6 @@
+# === personal ===
+deploy.sh
+
 # Dependencies
 node_modules
 .pnp
