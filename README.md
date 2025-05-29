@@ -24,7 +24,7 @@ Currently only docker is supported.
 
 - Clone the repository
 ```bash
-git clone https://github.com/yourusername/myclipboard.online.git
+git clone git@github.com:bilodev7/myclipboard.online.git
 
 cd myclipboard.online
 ```
