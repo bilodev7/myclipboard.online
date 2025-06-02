@@ -5,15 +5,18 @@ services:
     volumes:
       - ./apps/frontend:/app
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     environment:
       - NEXT_PUBLIC_URL=http://localhost:3000
-      # - NEXT_PUBLIC_URL=https://myclipboard.online
+      - PUBLIC_SOCKET_URL=http://localhost:3001 # in prod should be the same as the public url, because socket will be proxied by nginx
+      - DOCKER_BACKEND_URL=http://backend:3001
       - NODE_ENV=development
     command: sh -c "npm i -g pnpm && pnpm install && pnpm run dev"
     depends_on:
       - backend
     restart: unless-stopped
+    networks:
+      - app-network
 
   backend:
     image: node:18-alpine
@@ -22,17 +25,18 @@ services:
       - ./apps/backend:/app
       - ./uploads:/app/uploads # Mount uploads directory for file storage
     ports:
-      - "3001:3001" # This port must be exported and accessed by the frontend for the socket connection
+      - "127.0.0.1:3001:3001" # This port must be exported and accessed by the frontend for the socket connection
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=
     command: sh -c "npm i -g pnpm && pnpm install && pnpm run dev"
+    networks:
+      - app-network
+      - storage-network
     depends_on:
       - redis
     restart: unless-stopped
-    networks:
-      - storage-network
 
   redis:
     image: redis:alpine
@@ -42,9 +46,12 @@ services:
       - redis_data:/data
     restart: unless-stopped
     networks:
+      - app-network
       - storage-network
 
 networks:
+  app-network:
+    driver: bridge
   storage-network:
     driver: bridge
 

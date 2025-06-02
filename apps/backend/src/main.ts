@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
 import { IoAdapter } from '@nestjs/platform-socket.io';
+import { NextFunction, Request } from 'express';
 
 class CustomIoAdapter extends IoAdapter {
   createIOServer(port: number, options?: any): any {
@@ -29,12 +30,17 @@ async function bootstrap() {
     methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS'],
     credentials: true,
   });
+  app.use("*", (req: Request, _, next: NextFunction) => {
+    console.log(req.method, req.baseUrl)
+    next()
+  })
 
   // Use custom adapter for WebSockets
   app.useWebSocketAdapter(new CustomIoAdapter(app));
 
   // Set global prefix for REST API
   app.setGlobalPrefix('api');
+
 
   const port = process.env.PORT || 3001;
   await app.listen(port);

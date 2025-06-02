@@ -5,10 +5,13 @@ services:
     volumes:
       - ./apps/frontend:/app
     ports:
-      - "172.17.0.1:3000:3000" # 172.17.0.1 is the internal docker network
+      - "172.17.0.1:3000:3000" # 172.17.0.1 is the internal docker network for the nginx proxy
     environment:
       - NEXT_PUBLIC_URL=https://myclipboard.online
-    command: sh -c "npm i -g pnpm && pnpm install && pnpm run build && pnpm run start"
+      - PUBLIC_SOCKET_URL=https://myclipboard.online # in prod should be the same as the public url, because socket will be proxied by nginx
+      - DOCKER_BACKEND_URL=http://backend:3001
+      - NODE_ENV=production
+    command: sh -c "npm i -g pnpm && pnpm install && pnpm build && pnpm start"
     depends_on:
       - backend
     restart: unless-stopped
