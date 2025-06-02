@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSavedClipboards } from '../lib/hooks/useSavedClipboards';
 import { createPortal } from 'react-dom';
-import { History, X, Check, Edit, Clipboard, Clock, Trash2 } from 'lucide-react';
+import { History, X, Check, Edit, Clipboard, Clock, Trash2, Lock, AlertCircle } from 'lucide-react';
 
 interface SavedClipboardsButtonProps {
   onSelectClipboard: (roomCode: string) => void;
@@ -137,7 +137,7 @@ export default function SavedClipboardsButton({ onSelectClipboard }: SavedClipbo
                 savedClipboards.map((clipboard, index) => (
                   <div
                     key={clipboard.roomCode}
-                    className={`relative transition-all duration-150 ${editingRoomCode === clipboard.roomCode ? 'bg-surface/80' : 'hover:bg-surface/80'}`}
+                    className={`relative border-b border-surface-hover last:border-b-0 ${clipboard.isExpired ? 'opacity-70' : ''} ${editingRoomCode === clipboard.roomCode ? 'bg-surface/80' : 'hover:bg-surface/80'}`}
                   >
                     {/* Hover indicator */}
                     <div
@@ -187,10 +187,23 @@ export default function SavedClipboardsButton({ onSelectClipboard }: SavedClipbo
                                     <span className="text-secondary mr-2">{clipboard.name}</span>
                                   ) : null}
                                   <span className="font-mono text-sm text-text-secondary">{clipboard.roomCode}</span>
+                                  {clipboard.isPasswordProtected && (
+                                    <span className="ml-2 text-amber-500" title="Password protected">
+                                      <Lock className="h-3 w-3" />
+                                    </span>
+                                  )}
                                 </div>
-                                <div className="text-xs text-text-secondary mt-1 flex items-center">
+                                <div className="text-xs mt-1 flex items-center">
                                   <Clock className="h-3 w-3 mr-1" />
-                                  {formatDate(clipboard.lastVisited)}
+                                  <span className={clipboard.isExpired ? "text-error" : "text-text-secondary"}>
+                                    {formatDate(clipboard.lastVisited)}
+                                    {clipboard.isExpired && (
+                                      <span className="ml-2 inline-flex items-center text-error">
+                                        <AlertCircle className="h-3 w-3 mr-1" />
+                                        Expired
+                                      </span>
+                                    )}
+                                  </span>
                                 </div>
                               </div>
                             </div>
