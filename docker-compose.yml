@@ -31,12 +31,12 @@ services:
       - REDIS_PORT=6379
       - REDIS_PASSWORD=
     command: sh -c "npm i -g pnpm && pnpm install && pnpm run dev"
-    networks:
-      - app-network
-      - storage-network
     depends_on:
       - redis
     restart: unless-stopped
+    networks:
+      - app-network
+      - storage-network
 
   redis:
     image: redis:alpine
