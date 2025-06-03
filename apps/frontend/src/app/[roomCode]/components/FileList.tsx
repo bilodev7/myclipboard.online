@@ -24,7 +24,7 @@ interface FileListProps {
 export default function FileList({ files, onDeleteFile, roomCode }: FileListProps) {
   const [deletingFile, setDeletingFile] = useState<string | null>(null);
   const [previewFile, setPreviewFile] = useState<FileEntry | null>(null);
-  
+
   // Clear preview if the previewed file is deleted
   useEffect(() => {
     if (previewFile && !files.some(file => file.id === previewFile.id)) {
@@ -81,89 +81,89 @@ export default function FileList({ files, onDeleteFile, roomCode }: FileListProp
         ) : (
           files.map((file) => (
             <div
-            key={file.id}
-            className={`flex items-center p-3 bg-surface/80 rounded-lg border border-surface-hover hover:border-primary/30 transition-colors relative ${canPreview(file) ? 'cursor-pointer' : ''}`}
-            onClick={() => canPreview(file) ? setPreviewFile(file) : null}
-          >
-            <div className="mr-3">
-              {getFileIcon(file.mimetype)}
-            </div>
-            <div className="flex-grow min-w-0">
-              <p className="text-text-primary font-medium truncate">{file.filename}</p>
-              <p className="text-text-tertiary text-xs">
-                {formatFileSize(file.size)} • {new Date(file.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </p>
-            </div>
-            <div className="flex space-x-2" onClick={(e) => e.stopPropagation()}>
-              {canPreview(file) ? (
-                <button
-                  onClick={() => setPreviewFile(file)}
+              key={file.id}
+              className={`flex items-center p-3 bg-surface/80 rounded-lg border border-surface-hover hover:border-primary/30 transition-colors relative ${canPreview(file) ? 'cursor-pointer' : ''}`}
+              onClick={() => canPreview(file) ? setPreviewFile(file) : null}
+            >
+              <div className="mr-3">
+                {getFileIcon(file.mimetype)}
+              </div>
+              <div className="flex-grow min-w-0">
+                <p className="text-text-primary font-medium truncate">{file.filename}</p>
+                <p className="text-text-tertiary text-xs">
+                  {formatFileSize(file.size)} • {new Date(file.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </p>
+              </div>
+              <div className="flex space-x-2" onClick={(e) => e.stopPropagation()}>
+                {canPreview(file) ? (
+                  <button
+                    onClick={() => setPreviewFile(file)}
+                    className="p-1.5 text-text-secondary hover:text-primary rounded-md hover:bg-primary/10 transition-colors"
+                    title="Preview"
+                  >
+                    <Eye className="h-4 w-4" />
+                  </button>
+                ) : (
+                  <span
+                    className="p-1.5 text-text-tertiary cursor-not-allowed flex items-center"
+                    title="Preview not available for this file type"
+                  >
+                    <AlertCircle className="h-4 w-4" />
+                  </span>
+                )}
+                <a
+                  onClick={(e) => e.stopPropagation()}
+                  href={`${apiUrl}/clipboard/${roomCode}/files/${file.id}?filename=${encodeURIComponent(file.filename)}`}
+                  download={file.filename}
                   className="p-1.5 text-text-secondary hover:text-primary rounded-md hover:bg-primary/10 transition-colors"
-                  title="Preview"
+                  title="Download"
                 >
-                  <Eye className="h-4 w-4" />
+                  <Download className="h-4 w-4" />
+                </a>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDeletingFile(file.id)
+                  }}
+                  className="p-1.5 text-text-secondary hover:text-error rounded-md hover:bg-error/10 transition-colors"
+                  title="Delete"
+                >
+                  <Trash2 className="h-4 w-4" />
                 </button>
-              ) : (
-                <span
-                  className="p-1.5 text-text-tertiary cursor-not-allowed flex items-center"
-                  title="Preview not available for this file type"
-                >
-                  <AlertCircle className="h-4 w-4" />
-                </span>
-              )}
-              <a
-                onClick={(e) => e.stopPropagation()}
-                href={`${apiUrl}/clipboard/${roomCode}/files/${file.id}`}
-                download={file.filename}
-                className="p-1.5 text-text-secondary hover:text-primary rounded-md hover:bg-primary/10 transition-colors"
-                title="Download"
-              >
-                <Download className="h-4 w-4" />
-              </a>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setDeletingFile(file.id)
-                }}
-                className="p-1.5 text-text-secondary hover:text-error rounded-md hover:bg-error/10 transition-colors"
-                title="Delete"
-              >
-                <Trash2 className="h-4 w-4" />
-              </button>
-            </div>
+              </div>
 
-            {/* Delete confirmation */}
-            {deletingFile === file.id && (
-              <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-10 rounded-lg">
-                <div className="bg-surface p-4 rounded-lg shadow-lg max-w-xs w-full">
-                  <h4 className="text-text-primary font-medium mb-2">Delete file?</h4>
-                  <p className="text-text-secondary text-sm mb-4">This action cannot be undone.</p>
-                  <div className="flex justify-end space-x-2">
-                    <button
-                      onClick={() => setDeletingFile(null)}
-                      className="px-3 py-1.5 text-text-secondary hover:text-text-primary bg-surface-hover rounded-md"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={() => {
-                        // If this file is being previewed, close the preview first
-                        if (previewFile && previewFile.id === file.id) {
-                          setPreviewFile(null);
-                        }
-                        // Then delete the file
-                        onDeleteFile(file.id);
-                        setDeletingFile(null);
-                      }}
-                      className="px-3 py-1.5 text-white bg-error hover:bg-error/90 rounded-md"
-                    >
-                      Delete
-                    </button>
+              {/* Delete confirmation */}
+              {deletingFile === file.id && (
+                <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-10 rounded-lg">
+                  <div className="bg-surface p-4 rounded-lg shadow-lg max-w-xs w-full">
+                    <h4 className="text-text-primary font-medium mb-2">Delete file?</h4>
+                    <p className="text-text-secondary text-sm mb-4">This action cannot be undone.</p>
+                    <div className="flex justify-end space-x-2">
+                      <button
+                        onClick={() => setDeletingFile(null)}
+                        className="px-3 py-1.5 text-text-secondary hover:text-text-primary bg-surface-hover rounded-md"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => {
+                          // If this file is being previewed, close the preview first
+                          if (previewFile && previewFile.id === file.id) {
+                            setPreviewFile(null);
+                          }
+                          // Then delete the file
+                          onDeleteFile(file.id);
+                          setDeletingFile(null);
+                        }}
+                        className="px-3 py-1.5 text-white bg-error hover:bg-error/90 rounded-md"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
           ))
         )}
       </div>

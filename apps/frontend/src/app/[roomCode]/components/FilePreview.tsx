@@ -88,7 +88,7 @@ export default function FilePreview({ fileId, filename, mimetype, roomCode, onCl
             <p className="text-text-primary text-xl mb-4">Preview not available</p>
             <p className="text-text-secondary mb-6">This file type cannot be previewed.</p>
             <a
-              href={fileUrl}
+              href={`${apiUrl}/clipboard/${roomCode}/files/${fileId}?filename=${encodeURIComponent(filename)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
@@ -132,7 +132,7 @@ export default function FilePreview({ fileId, filename, mimetype, roomCode, onCl
         {/* Footer */}
         <div className="p-4 border-t border-surface-hover flex justify-end">
           <a
-            href={`${apiUrl}/clipboard/${roomCode}/files/${fileId}`}
+            href={`${apiUrl}/clipboard/${roomCode}/files/${fileId}?filename=${encodeURIComponent(filename)}`}
             download={filename}
             className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
           >

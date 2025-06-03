@@ -57,8 +57,16 @@ export class FileController {
     @Res() res: Response,
   ) {
     try {
-      const fileUrl = await this.fileService.getFileUrl(roomCode, fileId);
-      return res.redirect(fileUrl);
+      const fileData = await this.fileService.getFileData(roomCode, fileId);
+      const fileUrl = fileData.url;
+      
+      // If there's a filename parameter in the query, append it to the redirect URL
+      const originalFilename = res.req.query.filename;
+      const redirectUrl = originalFilename 
+        ? `${fileUrl}?download=true&originalName=${encodeURIComponent(originalFilename.toString())}` 
+        : fileUrl;
+      
+      return res.redirect(redirectUrl);
     } catch (error) {
       throw new HttpException(
         error.message || 'Failed to get file',

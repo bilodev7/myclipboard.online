@@ -24,10 +24,13 @@ export class FilesystemController {
       // Set appropriate headers
       res.setHeader('Content-Type', contentType);
       
+      // Get the original filename if provided in the query
+      const originalName = req.query.originalName ? decodeURIComponent(req.query.originalName.toString()) : fileName;
+      
       // Check if the request has a 'download' query parameter
       const downloadHeader = req.query.download === 'true' 
-        ? `attachment; filename="${fileName}"` 
-        : `inline; filename="${fileName}"`;
+        ? `attachment; filename="${originalName}"` 
+        : `inline; filename="${originalName}"`;
       
       res.setHeader('Content-Disposition', downloadHeader);
       

@@ -65,6 +65,11 @@ export class FileService {
   }
 
   async getFileUrl(roomCode: string, fileId: string): Promise<string> {
+    const fileData = await this.getFileData(roomCode, fileId);
+    return fileData.url;
+  }
+
+  async getFileData(roomCode: string, fileId: string): Promise<{ url: string; filename: string; fileEntry: FileEntry }> {
     const clipboard = await this.clipboardService.getClipboard(roomCode);
     if (!clipboard || !clipboard.files) {
       throw new NotFoundException(`Clipboard ${roomCode} not found`);
@@ -77,7 +82,11 @@ export class FileService {
 
     // Return the URL to the file controller with the correct API path
     const [roomCodeFromPath, fileName] = fileEntry.storageKey.split('/');
-    return `/api/files/${roomCodeFromPath}/${fileName}`;
+    return {
+      url: `/api/files/${roomCodeFromPath}/${fileName}`,
+      filename: fileEntry.filename,
+      fileEntry
+    };
   }
 
   async deleteFile(roomCode: string, fileId: string): Promise<boolean> {
