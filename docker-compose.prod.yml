@@ -1,0 +1,59 @@
+services:
+  frontend:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - ./apps/frontend:/app
+    ports:
+      - "172.17.0.1:3000:3000" # 172.17.0.1 is the internal docker network for the nginx proxy
+    environment:
+      - NEXT_PUBLIC_URL=https://myclipboard.online
+      - PUBLIC_SOCKET_URL=https://myclipboard.online # in prod should be the same as the public url, because socket will be proxied by nginx
+      - DOCKER_BACKEND_URL=http://backend:3001
+      - NODE_ENV=production
+    command: sh -c "npm i -g pnpm && pnpm install && pnpm build && pnpm start"
+    depends_on:
+      - backend
+    restart: always
+    networks:
+      - app-network
+
+  backend:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - ./apps/backend:/app
+      - ./uploads:/app/uploads # Mount uploads directory for file storage
+    ports:
+      - "172.17.0.1:3001:3001" # This port must be exported and accessed by the frontend for the socket connection
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=
+    command: sh -c "npm i -g pnpm && pnpm install && pnpm start"
+    depends_on:
+      - redis
+    restart: always
+    networks:
+      - app-network
+      - storage-network
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: always
+    networks:
+      - app-network
+      - storage-network
+
+networks:
+  app-network:
+    driver: bridge
+  storage-network:
+    driver: bridge
+
+volumes:
+  redis_data:
