@@ -14,7 +14,6 @@ services:
     command: sh -c "npm i -g pnpm && pnpm install && pnpm run dev"
     depends_on:
       - backend
-    restart: unless-stopped
     networks:
       - app-network
 
@@ -33,7 +32,6 @@ services:
     command: sh -c "npm i -g pnpm && pnpm install && pnpm run dev"
     depends_on:
       - redis
-    restart: unless-stopped
     networks:
       - app-network
       - storage-network
@@ -44,7 +42,6 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
-    restart: unless-stopped
     networks:
       - app-network
       - storage-network
